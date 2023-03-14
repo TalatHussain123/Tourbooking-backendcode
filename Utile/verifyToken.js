@@ -1,0 +1,36 @@
+import jwt from 'jsonwebtoken';
+
+export const verifyToken = (req, res, next) => {
+    const token = req.cookies.accesstoken
+    if (!token) {
+        return res.status(401).json({ success: false, message: "You are not authroize!" })
+    }
+    //if token exist then verify
+    jwt.verify(token, process.env.JWT_SCREATE_KEY, (err, user) => {
+        if (err) {
+            return res.status(401).json({ success: false, message: "Token in Invalid!" })
+        }
+        req.user = user
+        next()
+    })
+}
+
+export const verifyUser = (req, res, next) => {
+    verifyToken = (req, res, next, () => {
+        if (req.user.id === req.params.id || req.user.role === 'admin') {
+            next();
+        } else {
+            return res.status(401).json({ success: false, message: "You are not authenticated" })
+        }
+    })
+}
+
+export const verifyAdmin = (req, res, next) => {
+    verifyToken = (req, res, next, () => {
+        if (req.user.role === 'admin') {
+            next();
+        } else {
+            return res.status(401).json({ success: false, message: "You are not authorize" })
+        }
+    })
+}
