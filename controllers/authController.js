@@ -49,7 +49,7 @@ export const login = async (req, res) => {
         //set token in browser cookies and send response to client
         res.cookie('accessToken', token, {
             httpOnly: true,
-            expires: token.expiresIn
+            expires: token.expiresIn,
         }).status(200).json({ token, data: { ...rest }, role, })
     } catch (err) {
         res.status(500).json({ success: false, message: "login Failed!" })
